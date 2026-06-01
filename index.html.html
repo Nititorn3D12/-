@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เครื่องคำนวณไทยช่วยไทย</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef6ff;
+      color: #1f2937;
+    }
+
+    .page {
+      max-width: 1050px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, #0b65c2, #1593e6);
+      color: white;
+      padding: 26px 20px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(11, 101, 194, 0.25);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 31px;
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .mini-right-info {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: 310px;
+    }
+
+    .mini-badge {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(8px);
+      border-radius: 14px;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .mini-badge strong {
+      display: block;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 20px;
+      border: 1px solid #dcecff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      color: #0b65c2;
+      font-size: 22px;
+    }
+
+    .desc {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0 0 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 20px;
+      border: 1px solid #cfd8e3;
+      border-radius: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #0b65c2;
+      box-shadow: 0 0 0 4px rgba(11,101,194,0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 16px;
+      border: none;
+      border-radius: 16px;
+      background: #0b65c2;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover { background: #084f98; }
+    .green { background: #0f9f6e; }
+    .green:hover { background: #0b7f58; }
+    .gray { background: #64748b; }
+    .gray:hover { background: #475569; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .box {
+      background: white;
+      border-radius: 18px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 7px 18px rgba(0,0,0,0.06);
+      border: 1px solid #dcecff;
+    }
+
+    .box .title {
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .box .money {
+      color: #0b65c2;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .result-panel {
+      display: none;
+      margin-top: 16px;
+      background: #f8fbff;
+      border: 1px solid #d7e6f7;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .big-result {
+      background: #e8fff6;
+      border: 1px solid #bdebdc;
+      color: #066043;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .big-result .big {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .case-card {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 1px solid #dcecff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+    }
+
+    .case-head {
+      color: #0b65c2;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #d7e6f7;
+      font-size: 16px;
+    }
+
+    .row:last-child { border-bottom: none; }
+    .row strong { color: #0b65c2; text-align: right; }
+
+    .warning {
+      background: #fff3ed;
+      color: #d84315;
+      padding: 10px;
+      border-radius: 12px;
+      margin-top: 10px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .note {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 16px;
+    }
+
+    .toast {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      background: #0f9f6e;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      display: none;
+      max-width: 320px;
+      line-height: 1.5;
+      font-weight: bold;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 850px) {
+      .page { padding: 10px; }
+
+      .hero {
+        padding: 20px 14px 14px;
+        border-radius: 20px;
+        text-align: left;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+        padding-right: 0;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .mini-right-info {
+        position: static;
+        margin-top: 14px;
+        max-width: none;
+        justify-content: flex-start;
+      }
+
+      .mini-badge {
+        flex: 1;
+        min-width: 135px;
+        padding: 9px;
+      }
+
+      .grid, .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+        margin-bottom: 12px;
+      }
+
+      .card h2 {
+        font-size: 20px;
+      }
+
+      input {
+        font-size: 18px;
+        padding: 14px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 14px;
+      }
+
+      .summary {
+        gap: 8px;
+      }
+
+      .box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 13px 14px;
+      }
+
+      .box .title {
+        margin: 0;
+      }
+
+      .box .money {
+        font-size: 18px;
+        text-align: right;
+      }
+
+      .row {
+        font-size: 15px;
+      }
+
+      .toast {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+        max-width: none;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toastBox">เพิ่มรายการเรียบร้อยแล้ว</div>
+
+  <div class="page">
+    <div class="hero">
+      <div class="mini-right-info">
+        <div class="mini-badge">
+          สิทธิ์ต่อวัน
+          <strong>รัฐ 200 / เติม 133</strong>
+        </div>
+        <div class="mini-badge">
+          สิทธิ์ต่อเดือน
+          <strong>รัฐ 1,000 / เติม 667</strong>
+        </div>
+      </div>
+
+      <h1>Tan krub</h1>
+      <p>คำนวณง่าย ๆ ว่าใช้สิทธิ์ได้เท่าไร รัฐช่วยเท่าไร และประชาชนต้องเติมเงินเองเท่าไร</p>
+    </div>
+
+    <div class="card">
+      <h2>เริ่มคำนวณจากเครดิตที่เหลือ</h2>
+      <p class="desc">ถ้าเริ่มใหม่ทั้งเดือน ใส่ 1000 บาท ถ้าวันนี้ใช้ไปบางร้านแล้ว ให้ใส่เครดิตรัฐที่เหลือจริง ระบบจะหักต่อให้เอง</p>
+      <label>เครดิตรัฐคงเหลือเริ่มต้น</label>
+      <input type="number" id="startCredit" value="200" oninput="resetCasesOnly()" />
+    </div>
+
+    <div class="summary">
+      <div class="box"><div class="title">เครดิตเริ่มต้น</div><div class="money" id="sumStart">0.00</div></div>
+      <div class="box"><div class="title">รัฐช่วยไปแล้ว</div><div class="money" id="sumGov">0.00</div></div>
+      <div class="box"><div class="title">ประชาชนจ่ายเองรวม</div><div class="money" id="sumPeople">0.00</div></div>
+      <div class="box"><div class="title">เครดิตคงเหลือ</div><div class="money" id="sumRemain">0.00</div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>กรอกยอดซื้อร้านนี้</h2>
+        <p class="desc">เหมาะสำหรับใช้หน้าร้าน เมื่อรู้ยอดซื้อแล้ว ระบบจะบอกทันทีว่ารัฐช่วยเท่าไร ต้องจ่ายเองเท่าไร และเหลือเครดิตเท่าไร</p>
+        <label>ยอดซื้อร้านนี้</label>
+        <input type="number" id="buyAmount" placeholder="เช่น 200" />
+        <button onclick="addCaseFromBuy()">คำนวณและเพิ่มรายการ</button>
+      </div>
+
+      <div class="card">
+        <h2>เครดิตเหลือ ซื้อได้กี่บาท</h2>
+        <p class="desc">เหมาะสำหรับคนที่อยากเช็กก่อนซื้อ เช่น เครดิตเหลือ 83 บาท จะซื้อได้สูงสุดเท่าไร และต้องเติมเองกี่บาท</p>
+        <label>เครดิตรัฐที่เหลือ</label>
+        <input type="number" id="checkCredit" placeholder="เช่น 55" />
+        <button class="green" onclick="checkCreditCanBuy()">คำนวณยอดซื้อสูงสุด</button>
+
+        <div class="result-panel" id="creditResult">
+          <div class="big-result">
+            <div>ซื้อสินค้าได้สูงสุดประมาณ</div>
+            <div class="big" id="canBuyAmount">0.00 บาท</div>
+          </div>
+          <div class="row"><span>รัฐช่วยจ่าย</span><strong id="canGovPay">0.00 บาท</strong></div>
+          <div class="row"><span>ประชาชนต้องเติมเอง</span><strong id="canPeoplePay">0.00 บาท</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;">
+        <h2 style="margin:0;">รายการคำนวณแยกตามร้าน</h2>
+        <button class="gray" style="width:auto; padding:10px 16px; margin:0;" onclick="resetAll()">ล้างทั้งหมด</button>
+      </div>
+      <p class="desc" style="margin-top:10px;">ระบบจะแสดงเครดิตก่อนซื้อ ยอดที่รัฐช่วย ยอดที่ต้องจ่ายเอง และเครดิตคงเหลือหลังซื้อของแต่ละร้าน</p>
+      <div id="caseList"></div>
+    </div>
+
+    <p class="note">
+      สูตรที่ใช้คำนวณ: รัฐช่วย 60% ประชาชนจ่ายเอง 40%<br>
+      ยอดซื้อสูงสุด = เครดิตรัฐที่เหลือ ÷ 0.60
+    </p>
+  </div>
+
+  <script>
+    const GOV_RATE = 0.60;
+    const PEOPLE_RATE = 0.40;
+    let cases = [];
+    let toastTimer;
+
+    function money(num) {
+      return Number(num).toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' บาท';
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastBox');
+      toast.innerText = message;
+      toast.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2200);
+    }
+
+    function getStartCredit() {
+      const value = Number(document.getElementById('startCredit').value);
+      return value > 0 ? value : 0;
+    }
+
+    function getUsedGovCredit() {
+      return cases.reduce((sum, item) => sum + item.govPay, 0);
+    }
+
+    function getPeoplePayTotal() {
+      return cases.reduce((sum, item) => sum + item.totalPeoplePay, 0);
+    }
+
+    function getRemainingCredit() {
+      return Math.max(getStartCredit() - getUsedGovCredit(), 0);
+    }
+
+    function addCaseFromBuy() {
+      const amount = Number(document.getElementById('buyAmount').value);
+      if (amount <= 0) {
+        alert('กรุณากรอกยอดซื้อให้ถูกต้อง');
+        return;
+      }
+
+      const creditBefore = getRemainingCredit();
+      const maxBuyByCredit = creditBefore / GOV_RATE;
+      const eligibleBuy = Math.min(amount, maxBuyByCredit);
+      const govPay = eligibleBuy * GOV_RATE;
+      const peoplePay40 = eligibleBuy * PEOPLE_RATE;
+      const overLimitPay = amount - eligibleBuy;
+      const totalPeoplePay = peoplePay40 + overLimitPay;
+      const creditAfter = Math.max(creditBefore - govPay, 0);
+
+      cases.push({ amount, creditBefore, eligibleBuy, govPay, peoplePay40, overLimitPay, totalPeoplePay, creditAfter });
+      document.getElementById('buyAmount').value = '';
+      render();
+      showToast('เพิ่มรายการเรียบร้อยแล้ว ยอดนี้คำนวณให้แล้วค้าฟ');
+    }
+
+    function checkCreditCanBuy() {
+      const input = document.getElementById('checkCredit');
+      const credit = Number(input.value);
+      if (input.value === '' || credit < 0) {
+        alert('กรุณากรอกเครดิตรัฐที่เหลือให้ถูกต้อง');
+        return;
+      }
+
+      const canBuy = credit / GOV_RATE;
+      const peoplePay = canBuy * PEOPLE_RATE;
+
+      document.getElementById('canBuyAmount').innerText = money(canBuy);
+      document.getElementById('canGovPay').innerText = money(credit);
+      document.getElementById('canPeoplePay').innerText = money(peoplePay);
+      document.getElementById('creditResult').style.display = 'block';
+      showToast('คำนวณจากเครดิตคงเหลือเรียบร้อยแล้ว');
+    }
+
+    function render() {
+      document.getElementById('sumStart').innerText = money(getStartCredit());
+      document.getElementById('sumGov').innerText = money(getUsedGovCredit());
+      document.getElementById('sumPeople').innerText = money(getPeoplePayTotal());
+      document.getElementById('sumRemain').innerText = money(getRemainingCredit());
+
+      const list = document.getElementById('caseList');
+      list.innerHTML = '';
+
+      if (cases.length === 0) {
+        list.innerHTML = '<p class="desc" style="text-align:center; margin:16px 0 0;">ยังไม่มีรายการ ให้กรอกยอดซื้อร้านแรกเพื่อเริ่มคำนวณ</p>';
+        return;
+      }
+
+      cases.forEach((item, index) => {
+        let warning = '';
+        if (item.creditBefore <= 0) {
+          warning = 'เครดิตรัฐหมดแล้ว รายการนี้ต้องจ่ายเองทั้งหมด';
+        } else if (item.overLimitPay > 0) {
+          warning = 'เครดิตรัฐที่เหลือไม่พอ ยอดส่วนเกินต้องจ่ายเองเต็มจำนวน';
+        }
+
+        list.innerHTML += `
+          <div class="case-card">
+            <div class="case-head">ร้านที่ ${index + 1}</div>
+            <div class="row"><span>เครดิตก่อนซื้อ</span><strong>${money(item.creditBefore)}</strong></div>
+            <div class="row"><span>ยอดซื้อร้านนี้</span><strong>${money(item.amount)}</strong></div>
+            <div class="row"><span>ยอดที่ใช้สิทธิ์ได้จริง</span><strong>${money(item.eligibleBuy)}</strong></div>
+            <div class="row"><span>รัฐช่วย 60%</span><strong>${money(item.govPay)}</strong></div>
+            <div class="row"><span>ประชาชนจ่าย 40%</span><strong>${money(item.peoplePay40)}</strong></div>
+            <div class="row"><span>ยอดเกินสิทธิ์ที่ต้องจ่ายเอง</span><strong>${money(item.overLimitPay)}</strong></div>
+            <div class="row"><span>รวมจ่ายเองร้านนี้</span><strong>${money(item.totalPeoplePay)}</strong></div>
+            <div class="row"><span>เครดิตคงเหลือหลังซื้อ</span><strong>${money(item.creditAfter)}</strong></div>
+            ${warning ? `<div class="warning">${warning}</div>` : ''}
+          </div>
+        `;
+      });
+    }
+
+    function resetCasesOnly() {
+      cases = [];
+      render();
+    }
+
+    function resetAll() {
+      cases = [];
+      document.getElementById('buyAmount').value = '';
+      document.getElementById('checkCredit').value = '';
+      document.getElementById('creditResult').style.display = 'none';
+      render();
+      showToast('ล้างรายการทั้งหมดเรียบร้อยแล้ว');
+    }
+
+    render();
+  </script>
+</body>
+</html>
